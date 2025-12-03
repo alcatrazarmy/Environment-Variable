@@ -1,0 +1,58 @@
+# Permit Scraper Configuration
+# Edit sources to add your permit data sources
+
+# Number of days to look back for permits
+days_back: 30
+
+# Geocoding settings (requires Google Maps API)
+geocode:
+  enabled: false
+  api_key: ""
+
+# Airtable/Make.com webhook settings
+airtable:
+  enabled: false
+  webhook_url: ""
+
+# Data sources - supports 'api' and 'html' modes
+sources:
+  # Example API source (commented out - replace with real endpoints)
+  # - name: CityAPIExample
+  #   mode: api
+  #   url: https://api.example.gov/permits
+  #   list_path: results
+  #   headers:
+  #     Authorization: "Bearer YOUR_TOKEN"
+  #   params:
+  #     limit: 100
+  #   mapping:
+  #     permit_number: permitNumber
+  #     issue_date: issueDate
+  #     work_class: workClass
+  #     description: description
+  #     address: address.street
+  #     city: address.city
+  #     state: address.state
+  #     zip: address.zip
+  #     contractor: contractor.name
+  #     owner: owner.name
+  #     estimated_value: estimatedValue
+
+  # Example HTML source (commented out - replace with real URLs)
+  # - name: CountyHTMLExample
+  #   mode: html
+  #   url: https://county.example.gov/permits/recent
+  #   row_selector: "table#permits tr.data"
+  #   fields:
+  #     permit_number: "td:nth-child(1)::text"
+  #     issue_date: "td:nth-child(2)::text"
+  #     work_class: "td:nth-child(3)::text"
+  #     description: "td:nth-child(4)::text"
+  #     address: "td:nth-child(5)::text"
+  #     city: "td:nth-child(6)::text"
+  #     state: "td:nth-child(7)::text"
+  #     zip: "td:nth-child(8)::text"
+  #     contractor: "td:nth-child(9)::text"
+  #     owner: "td:nth-child(10)::text"
+  #     estimated_value: "td:nth-child(11)::text"
+  []
