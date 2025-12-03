@@ -14,7 +14,7 @@ import sys
 import json
 import hashlib
 from datetime import datetime, timedelta, timezone
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 import httpx
 from parsel import Selector
@@ -62,7 +62,7 @@ DEFAULT_HEADERS = {
 }
 
 @retry(stop=stop_after_attempt(5), wait=wait_exponential_jitter(1, 5))
-def fetch(url: str, method: str="GET", headers: Dict[str,str]|None=None, params=None, data=None, json_body=None) -> httpx.Response:
+def fetch(url: str, method: str = "GET", headers: Optional[Dict[str, str]] = None, params: Optional[Dict[str, Any]] = None, data: Optional[Dict[str, Any]] = None, json_body: Optional[Dict[str, Any]] = None) -> httpx.Response:
     headers = {**DEFAULT_HEADERS, **(headers or {})}
     with httpx.Client(timeout=30.0, follow_redirects=True, headers=headers) as client:
         if method.upper() == "GET":
@@ -171,7 +171,8 @@ def run(cfg_path: str):
         return
 
     if "issue_date" in df.columns:
-        df = df[(df["issue_date"].fillna("0000-00-00") >= cutoff)]
+        # Filter permits: include those with valid dates >= cutoff, exclude null dates
+        df = df[df["issue_date"].notna() & (df["issue_date"] >= cutoff)]
     df = df.drop_duplicates(subset=["hash_id"])
 
     if conf.geocode.get("enabled"):
