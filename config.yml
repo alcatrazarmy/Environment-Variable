@@ -1,0 +1,52 @@
+# Permit Scraper Configuration
+# See README.md for full documentation
+
+# Output settings
+output_csv: permits.csv
+days_back: 7
+
+# Data sources - configure as needed
+sources: []
+  # Example API source:
+  # - name: "example_api"
+  #   mode: api
+  #   url: "https://api.example.com/permits"
+  #   method: GET
+  #   list_path: "data.permits"
+  #   mapping:
+  #     permit_number: "permitNo"
+  #     issue_date: "issuedDate"
+  #     address: "location.street"
+  #     city: "location.city"
+  #     state: "location.state"
+  #     zip: "location.zip"
+  #     work_class: "type"
+  #     description: "description"
+  #     contractor: "contractor.name"
+  #     owner: "owner.name"
+  #     estimated_value: "value"
+
+  # Example HTML source:
+  # - name: "example_html"
+  #   mode: html
+  #   url: "https://example.com/permits"
+  #   row_selector: "table.permits tr"
+  #   fields:
+  #     permit_number: "td:nth-child(1)::text"
+  #     issue_date: "td:nth-child(2)::text"
+  #     address: "td:nth-child(3)::text"
+  #     city: "td:nth-child(4)::text"
+  #     state: "td:nth-child(5)::text"
+  #     zip: "td:nth-child(6)::text"
+
+# Geocoding settings (optional)
+geocode:
+  enabled: false
+  # provider: google
+  # api_key: YOUR_API_KEY
+
+# Airtable integration (optional)
+airtable:
+  enabled: false
+  # webhook_url: YOUR_WEBHOOK_URL
+  # debug_payload_path: airtable_payload.json
