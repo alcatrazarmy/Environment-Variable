@@ -1,22 +1,25 @@
-import traceback
 import asyncio
-from datetime import date, timedelta
+import os
+import re
 import pandas as pd
 from tenacity import retry, stop_after_attempt, wait_exponential_jitter
-from playwright.async_api import async_playwright, TimeoutError as PWTimeout
+from playwright.async_api import async_playwright
 
 PORTAL = "https://collincountytx-energovweb.tylerhost.net/apps/selfservice"
-DAYS_BACK = 14
 GLOBAL_TIMEOUT = 30000
 PERMIT_COLS = ["permit_number","issue_date","address","description","status"]
+# Date pattern to match dates like MM/DD/YYYY, YYYY-MM-DD, or common date formats
+DATE_PATTERN = re.compile(r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\d{4}[/-]\d{1,2}[/-]\d{1,2}\b')
 
 @retry(stop=stop_after_attempt(2), wait=wait_exponential_jitter(2,5))
-async def scrape():
-    since = (date.today() - timedelta(days=DAYS_BACK)).isoformat()
+async def scrape(headless=None):
+    # Allow headless mode to be configured via environment variable or parameter
+    if headless is None:
+        headless = os.environ.get("HEADLESS", "false").lower() == "true"
     rows = []
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False, args=["--disable-blink-features=AutomationControlled"])
+        browser = await p.chromium.launch(headless=headless, args=["--disable-blink-features=AutomationControlled"])
         ctx = await browser.new_context(viewport={"width": 1400, "height": 900})
         page = await ctx.new_page()
         page.set_default_timeout(45000)
@@ -69,8 +72,9 @@ async def scrape():
                     rec["description"] = texts[2]
                 if len(texts) > 3:
                     rec["status"] = texts[3]
+                # Use regex pattern to find dates instead of fragile string matching
                 for s in texts:
-                    if "202" in s or "issued" in s.lower():
+                    if DATE_PATTERN.search(s) or "issued" in s.lower():
                         rec["issue_date"] = s
                         break
                 return rec

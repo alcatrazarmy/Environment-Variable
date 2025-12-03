@@ -28,6 +28,14 @@ Run the scraper:
 python collin_permits_scraper.py
 ```
 
+#### Headless Mode
+
+By default, the browser runs in visible mode. To run in headless mode (no visible browser window), set the `HEADLESS` environment variable:
+
+```bash
+HEADLESS=true python collin_permits_scraper.py
+```
+
 The script will:
 1. Open the Collin County permit search page
 2. Navigate to the Permits tab
