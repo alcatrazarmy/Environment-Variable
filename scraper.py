@@ -12,7 +12,7 @@ import json
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 import httpx
 import pandas as pd
@@ -117,7 +117,7 @@ def fetch_url(
         return response
 
 
-def scrape_api_source(source: dict, days_back: int) -> list[PermitRecord]:
+def scrape_api_source(source: dict, days_back: int) -> List[PermitRecord]:
     """Scrape permits from an API source."""
     records = []
     url = source.get("url", "")
@@ -182,7 +182,7 @@ def scrape_api_source(source: dict, days_back: int) -> list[PermitRecord]:
     return records
 
 
-def scrape_html_source(source: dict, days_back: int) -> list[PermitRecord]:
+def scrape_html_source(source: dict, days_back: int) -> List[PermitRecord]:
     """Scrape permits from an HTML source."""
     records = []
     url = source.get("url", "")
@@ -244,7 +244,7 @@ def scrape_html_source(source: dict, days_back: int) -> list[PermitRecord]:
     return records
 
 
-def airtable_upsert(records: list[PermitRecord], webhook_url: str) -> bool:
+def airtable_upsert(records: List[PermitRecord], webhook_url: str) -> bool:
     """Send records to Airtable via Make.com webhook."""
     if not webhook_url:
         print("[WARN] No webhook URL configured for Airtable")
@@ -280,7 +280,7 @@ def main(config_path: str) -> None:
         config_data = yaml.safe_load(f) or {}
 
     config = Config(**config_data)
-    all_records: list[PermitRecord] = []
+    all_records: List[PermitRecord] = []
 
     print(f"[INFO] Scraping {len(config.sources)} source(s), days_back={config.days_back}")
 
